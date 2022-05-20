@@ -15,12 +15,10 @@ namespace IntegerSortWebApp.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Number> numList = _database.Numbers;
-
-            return View(numList);
+            return View();
         }
 
-        public IActionResult AddNumber()
+        public IActionResult AddSort()
         {
             return View();
 
@@ -28,14 +26,15 @@ namespace IntegerSortWebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]  
-        public IActionResult AddNumber(IFormCollection numbersToAdd)       
+        public IActionResult AddSort(IFormCollection numbersToAdd)       
         {
             string formIntegerInput = numbersToAdd["Integer"];
 
             String[] strings = formIntegerInput.Split(",");
 
+            Sort newSort = new Sort();
             List<Number> numbers = new List<Number>();
-            SortPerformance newSortPerformance = new SortPerformance();
+
 
             for (int i = 0; i < strings.Length; i++)
             {
@@ -43,15 +42,7 @@ namespace IntegerSortWebApp.Controllers
                 number.Integer = Convert.ToInt32(strings[i]);
                 numbers.Add(number); 
             }
-
-            var watch = new System.Diagnostics.Stopwatch();
-
-            // Start performance metric
-            watch.Start();
-            _database.AddRange(numbers.OrderByDescending(num => num.Integer));
-            watch.Stop();
-            newSortPerformance.SortTime = watch.ElapsedMilliseconds;
-            _database.SortPerformance = newSortPerformance;
+       
             _database.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -62,7 +53,24 @@ namespace IntegerSortWebApp.Controllers
             _database.Remove(numberRecord);
             _database.SaveChanges();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("ViewSort", "Number", new { id = numberRecord.SortID });
+        }
+
+        public IActionResult ViewSort(int Id)
+        {
+            IEnumerable<Number> numberList = _database.Numbers.Where(n => n.SortID == Id);
+
+            if (numberList.Count() != 0)
+            {
+                return View(numberList);
+            }
+            else
+            {
+                Sort sortToRemove = _database.Sorts.Find(Id);
+                _database.Sorts.Remove(sortToRemove);
+                _database.SaveChanges();
+                return RedirectToAction("Index", "Sorts");
+            }
         }
 
         public IActionResult SortAscending()
@@ -77,16 +85,6 @@ namespace IntegerSortWebApp.Controllers
             IEnumerable<Number> numList = _database.Numbers;
             numList = numList.OrderByDescending(num => num.Integer);
             return View("Index", numList);
-        }
-
-        public IActionResult DeleteDatabase()
-        {
-            foreach (Number obj in _database.Numbers)
-            {
-                _database.Remove(obj);
-            }
-            _database.SaveChanges();
-            return RedirectToAction("Index");
         }
 
         public IActionResult ExportJSON()

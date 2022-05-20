@@ -32,43 +32,49 @@ namespace IntegerSortWebApp.Migrations
                     b.Property<int>("Integer")
                         .HasColumnType("int");
 
+                    b.Property<int>("SortID")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("SortID");
 
                     b.ToTable("Numbers");
                 });
 
-            modelBuilder.Entity("IntegerSortWebApp.Models.SortPerformance", b =>
+            modelBuilder.Entity("IntegerSortWebApp.Models.Sort", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("SortOrder")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("SortDirection")
+                        .HasColumnType("int");
 
                     b.Property<long>("SortTime")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
-                    b.ToTable("SortPerformance");
-                });
-
-            modelBuilder.Entity("IntegerSortWebApp.Models.SortPerformance", b =>
-                {
-                    b.HasOne("IntegerSortWebApp.Models.Number", "Number")
-                        .WithOne("SortPerformance")
-                        .HasForeignKey("IntegerSortWebApp.Models.SortPerformance", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Number");
+                    b.ToTable("Sorts");
                 });
 
             modelBuilder.Entity("IntegerSortWebApp.Models.Number", b =>
                 {
-                    b.Navigation("SortPerformance")
+                    b.HasOne("IntegerSortWebApp.Models.Sort", "Sort")
+                        .WithMany("Numbers")
+                        .HasForeignKey("SortID")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Sort");
+                });
+
+            modelBuilder.Entity("IntegerSortWebApp.Models.Sort", b =>
+                {
+                    b.Navigation("Numbers");
                 });
 #pragma warning restore 612, 618
         }

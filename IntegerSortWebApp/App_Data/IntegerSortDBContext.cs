@@ -9,7 +9,10 @@ namespace IntegerSortWebApp.App_Data
         {
 
         }
+
+        public DbSet<Sort> Sorts { get; set; }
         public DbSet<Number> Numbers { get; set; }
+
 
     }
 }

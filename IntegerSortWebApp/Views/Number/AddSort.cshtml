@@ -1,0 +1,41 @@
+﻿@model Sort
+
+@*<form method="post">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+         Add Number to Database
+        <hr />
+        </div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Integer"></label>
+        <input type="number" class="form-control" asp-for="Integer"/>
+        <button name="button" class="btn btn-primary" asp-controller="Number" asp-action="AddNumber">Add</button>
+    </div>
+</form>*@
+
+@* @using (Html.BeginForm("Index", "Home", FormMethod.Post))
+    {
+        <input id="btnAdd" type="button" value="Add" onclick="AddTextBox()"/>
+        <br/>
+        <br/>
+        <div id="TextBoxContainer">
+            <!--Textboxes will be added here -->
+        </div>
+        <br/>
+        <input type="submit" value="Submit" class="btn btn-primary" asp-controller="Number" asp-action="AddNumber"/>
+    }*@
+
+<form method="post">
+
+        <div id="TextBoxContainer" class="border">
+            <input id="btnAdd" type="button" value="Add" onclick="AddTextBox()" class="btn btn-primary"/>
+             <input type="submit" value="Submit" class="btn btn-primary" asp-controller="Sorts" asp-action="CreateSort"/>
+             <button name="button" class="btn btn-primary" asp-controller="Sorts" asp-action="Index">Back</button>
+            <!--Textboxes will be added here -->
+        </div>
+        <div>
+
+        </div>
+        <br/>
+</form>
