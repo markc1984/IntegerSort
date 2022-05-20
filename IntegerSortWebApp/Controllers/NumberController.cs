@@ -13,50 +13,7 @@ namespace IntegerSortWebApp.Controllers
             _database = database;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult AddSort()
-        {
-            return View();
-
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]  
-        public IActionResult AddSort(IFormCollection numbersToAdd)       
-        {
-            string formIntegerInput = numbersToAdd["Integer"];
-
-            String[] strings = formIntegerInput.Split(",");
-
-            Sort newSort = new Sort();
-            List<Number> numbers = new List<Number>();
-
-
-            for (int i = 0; i < strings.Length; i++)
-            {
-                Number number = new Number();
-                number.Integer = Convert.ToInt32(strings[i]);
-                numbers.Add(number); 
-            }
-       
-            _database.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
-        public IActionResult RemoveNumber(int Id)
-        {
-            Number numberRecord = _database.Numbers.Find(Id);
-            _database.Remove(numberRecord);
-            _database.SaveChanges();
-
-            return RedirectToAction("ViewSort", "Number", new { id = numberRecord.SortID });
-        }
-
-        public IActionResult ViewSort(int Id)
+        public IActionResult Index(int Id)
         {
             IEnumerable<Number> numberList = _database.Numbers.Where(n => n.SortID == Id);
 
@@ -73,6 +30,57 @@ namespace IntegerSortWebApp.Controllers
             }
         }
 
+        public IActionResult AddNumbers()
+        {
+            return View();
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]  
+        public IActionResult AddNumbers(IFormCollection numbersToAdd)       
+        {
+            string formIntegerInput = numbersToAdd["Integer"];
+            String[] strings = formIntegerInput.Split(",");
+            Sort newSort = new Sort();
+            List<Number> numbers = new List<Number>();
+
+            for (int i = 0; i < strings.Length; i++)
+            {
+                Number number = new Number();
+                number.Integer = Convert.ToInt32(strings[i]);
+                numbers.Add(number); 
+            }
+       
+            _database.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult RemoveNumberFromSort(int Id)
+        {
+            Number numberRecord = _database.Numbers.Find(Id);
+            _database.Remove(numberRecord);
+            _database.SaveChanges();
+            return RedirectToAction("Index", "Number", new { id = numberRecord.SortID });
+        }
+
+        public IActionResult EditNumber(int Id)
+        {
+            var numberRecord = _database.Numbers.Find(Id);
+            return View(numberRecord);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditNumber(int id, [Bind("Id", "Integer", "Sort", "SortID")] Number newNum)
+        {
+
+            _database.Numbers.Update(newNum);
+            _database.SaveChanges();
+
+            return RedirectToAction("Index", "Number", new { id = newNum.SortID });
+        }
+
         public IActionResult SortAscending()
         {
             IEnumerable<Number> numList = _database.Numbers;
@@ -86,14 +94,5 @@ namespace IntegerSortWebApp.Controllers
             numList = numList.OrderByDescending(num => num.Integer);
             return View("Index", numList);
         }
-
-        public IActionResult ExportJSON()
-        {
-
-            return View();
-            
-        }
-
-
     }
 }

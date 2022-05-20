@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Number>
+
+@{
+    ViewData["Title"] = "Numbers Index";
+}
+
+<div class="container p-3">
+        <div class="container">
+            <div class="row">
+        <div class="col-sm"><a asp-controller="Number" asp-action="AddNumbers" class="btn btn-primary">New Sort</a></div>
+         <div class="col-sm"><a asp-controller="Sorts" asp-action="Index" class="btn btn-primary">Back</a></div>
+        </div>
+    </div>
+</div>
+
+<h2 class="text-primary">Integers table for sort ID# @Model.First().SortID</h2> 
+
+<table class="table table-bordered table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>
+                Integers
+            </th>   
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var obj in Model)
+        {
+
+             <tr>                  
+                     <td width="30%">
+                        @obj.Integer
+                 </td>
+                 <td>
+                     <div class="container">
+                         <div class="row">
+                    <a asp-route-id=@obj.Id value="Edit" asp-controller="Number" asp-action="EditNumber" class="btn btn-primary">Edit</a>
+                    <a asp-route-id=@obj.Id value="Remove" asp-controller="Number" asp-action="RemoveNumberFromSort" class="btn btn-primary">Remove</a>
+                </div>    
+                </div>
+                 </td>
+             </tr>
+        }
+    </tbody>
+</table>

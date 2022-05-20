@@ -1,0 +1,14 @@
+﻿@model Sort
+
+<form method="post">
+     <input id="btnAdd" type="button" value="Add" onclick="AddInputBox()" class="btn btn-primary"/>
+             <input type="submit" value="Submit" class="btn btn-primary" asp-controller="Sorts" asp-action="CreateSort"/>
+             <button name="button" class="btn btn-primary" asp-controller="Sorts" asp-action="Index">Back</button>
+
+    @*         <input type="radio" asp-for="SortDirection" value="@Model.SortDirection" checked /><br/>
+             <input type="radio" asp-for="SortDirection" value="@Model.SortDirection"/>*@
+
+        <div id="InputContainer" class="border"></div>
+
+        <br/>
+</form>

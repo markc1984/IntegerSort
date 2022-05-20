@@ -5,33 +5,33 @@
 
 function GetDynamicTextBox(value) {
     var div = $("<div />");
-    var textBox = $("<input />").attr("type", "text").attr("name", "Integer").addClass("form-control");
-    textBox.val(value);
+    var textInput = $("<input />").attr("type", "number").attr("name", "Integer").addClass("form-control");
+    textInput.val(value);
     div.append("</br>");
-    div.append(textBox);
+    div.append(textInput);
     div.append("</br>");
 
     var button = $("<input />").attr("type", "button").attr("value", "Remove").addClass("btn btn-primary");
-    button.attr("onclick", "RemoveTextBox(this)");
+    button.attr("onclick", "RemoveInputBox(this)");
     div.append(button);
 
     return div;
 }
-function AddTextBox() {
+function AddInputBox() {
     var div = GetDynamicTextBox("");
-    $("#TextBoxContainer").append(div);
+    $("#InputContainer").append(div);
 }
 
-function RemoveTextBox(button) {
+function RemoveInputBox(button) {
     $(button).parent().remove();
 }
 
 $(function () {
     var values = eval('@Html.Raw(ViewBag.Values)');
     if (values != null) {
-        $("#TextBoxContainer").html("");
+        $("#InputContainer").html("");
         $(values).each(function () {
-            $("#TextBoxContainer").append(GetDynamicTextBox(this));
+            $("#InputContainer").append(GetDynamicTextBox(this));
         });
     }
 });

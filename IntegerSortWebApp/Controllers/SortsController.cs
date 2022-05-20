@@ -78,7 +78,9 @@ namespace IntegerSortWebApp.Controllers
             return RedirectToAction("Index");
         }
 
-
-
+        public IActionResult ExportJSON()
+        {
+            return View();
+        }
     }
 }

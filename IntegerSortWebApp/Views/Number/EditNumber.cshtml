@@ -1,0 +1,24 @@
+﻿@model Number
+
+<h2 class="text-primary">Edit Record</h2> 
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditNumber">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+             <input type="hidden" asp-for="SortID" />
+                      
+            <div class="form-group">
+                <input asp-for="Integer" class="form-control" />
+                <span asp-validation-for="Integer" class="text-danger"></span>
+            </div>
+            <br />
+               <div class="form-group">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+                 <a asp-controller="Number" asp-route-id="@Model.SortID" asp-action="Index" class="btn btn-primary">Back</a>
+            </div>
+
+        </form>
+    </div>
+</div>
