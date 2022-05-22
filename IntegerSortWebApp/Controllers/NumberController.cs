@@ -26,6 +26,7 @@ namespace IntegerSortWebApp.Controllers
             {
                 return View(numberList);
             }
+            // remove sort as all numbers have been deleted from the sort
             else
             {
                 Sort sortToRemove = _database.Sorts.Find(Id);
@@ -84,8 +85,6 @@ namespace IntegerSortWebApp.Controllers
         {
             var numberRecord = _database.Numbers.Find(Id);
 
-            Sort sort = _database.Sorts.Where(n => n.Id == numberRecord.SortID).Single();
-
             return View(numberRecord);
         }
 
@@ -93,7 +92,6 @@ namespace IntegerSortWebApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult EditNumber(int id, [Bind("Id", "Integer", "Sort", "SortID")] Number newNum)
         {
-            if (!ModelState.IsValid) { return BadRequest(ModelState); }
 
             if (id == null || newNum == null)
             {

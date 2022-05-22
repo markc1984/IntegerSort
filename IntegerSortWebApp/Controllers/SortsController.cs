@@ -26,33 +26,30 @@ namespace IntegerSortWebApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreateSort(IFormCollection numbersToAdd)
         {
-            Sort sort = new Sort();
+            Sort tempSort = new Sort();
             string formIntegerInput = numbersToAdd["Integer"];
             int sortOrder = Int32.Parse(numbersToAdd["SortOrder"]);
-            String[] strings = formIntegerInput.Split(",");
+            tempSort.SortDirection = sortOrder;
+            String[] numberStringArray = formIntegerInput.Split(",");
             List<Number> numbers = new List<Number>();
 
-            for (int i = 0; i < strings.Length; i++)
-            { 
-                numbers.Add(new Number { Integer = Convert.ToInt32(strings[i]) });
+            for (int i = 0; i < numberStringArray.Length; i++)
+            {
+                numbers.Add(new Number { Integer = Convert.ToInt32(numberStringArray[i]) });
             }
 
             var watch = new System.Diagnostics.Stopwatch();
 
             // Start performance metric
             watch.Start();
-            if (sortOrder == (int)SortOrder.Ascending)          
-                _database.Numbers.AddRange(numbers.OrderBy(num => num.Integer));      
-            else       
+            if (sortOrder == (int)SortOrder.Ascending)
+                _database.Numbers.AddRange(numbers.OrderBy(num => num.Integer));
+            else
                 _database.Numbers.AddRange(numbers.OrderByDescending(num => num.Integer));
-
-            
             watch.Stop();
-            sort.SortTime = watch.ElapsedMilliseconds;
-            sort.SortDirection = (int)SortOrder.Descending;
-
-            sort.Numbers = numbers;
-            _database.Sorts.Add(sort);
+            tempSort.SortTime = watch.ElapsedMilliseconds;
+            tempSort.Numbers = numbers;
+            _database.Sorts.Add(tempSort);
             _database.SaveChanges();
 
             return RedirectToAction("Index", "Sorts");
@@ -84,14 +81,12 @@ namespace IntegerSortWebApp.Controllers
 
         public IActionResult ExportJSON()
         {
-            if (_database.Sorts.Count() > 0)
+            if (_database.Numbers.ToList().Count > 0)
             {
-                _database.Numbers.ToList();
-                string export = JsonSerializer.Serialize(_database.Sorts.ToList());
-
+                return Json(_database.Sorts.ToList(), new JsonSerializerOptions { WriteIndented = true });
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Sorts");
         }
     }
 }
