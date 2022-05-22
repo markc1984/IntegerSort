@@ -13,8 +13,13 @@ namespace IntegerSortWebApp.Controllers
             _database = database;
         }
 
-        public IActionResult Index(int Id)
+        public IActionResult Index(int? Id)
         {
+            if (Id == null)
+            {
+                return NotFound();
+            }
+
             IEnumerable<Number> numberList = _database.Numbers.Where(n => n.SortID == Id);
 
             if (numberList.Count() != 0)
@@ -56,9 +61,20 @@ namespace IntegerSortWebApp.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult RemoveNumberFromSort(int Id)
+        public IActionResult RemoveNumberFromSort(int? Id)
         {
+            if (Id == null)
+            {
+                return NotFound();
+            }
+
             Number numberRecord = _database.Numbers.Find(Id);
+
+            if (numberRecord == null)
+            {
+                return NotFound();
+            }
+
             _database.Remove(numberRecord);
             _database.SaveChanges();
             return RedirectToAction("Index", "Number", new { id = numberRecord.SortID });
@@ -67,6 +83,9 @@ namespace IntegerSortWebApp.Controllers
         public IActionResult EditNumber(int Id)
         {
             var numberRecord = _database.Numbers.Find(Id);
+
+            Sort sort = _database.Sorts.Where(n => n.Id == numberRecord.SortID).Single();
+
             return View(numberRecord);
         }
 
@@ -74,20 +93,19 @@ namespace IntegerSortWebApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult EditNumber(int id, [Bind("Id", "Integer", "Sort", "SortID")] Number newNum)
         {
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
+
+            if (id == null || newNum == null)
+            {
+                return NotFound();
+            }
 
             _database.Numbers.Update(newNum);
             _database.SaveChanges();
 
             return RedirectToAction("Index", "Number", new { id = newNum.SortID });
         }
-
-        public IActionResult SortAscending()
-        {
-            IEnumerable<Number> numList = _database.Numbers;
-            numList = numList.OrderBy(num => num.Integer);
-            return View("Index", numList);
-        }
-
+          
         public IActionResult SortDescending()
         {
             IEnumerable<Number> numList = _database.Numbers;

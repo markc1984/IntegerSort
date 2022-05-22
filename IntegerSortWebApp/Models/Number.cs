@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace IntegerSortWebApp.Models
 {
@@ -11,6 +12,7 @@ namespace IntegerSortWebApp.Models
         public int Integer { get; set; }
         public int SortID { get; set; }
         [ForeignKey("SortID")]
-        public Sort Sort { get; set; }
+        [JsonIgnore]
+        public virtual Sort Sort { get; set; }
     }
 }

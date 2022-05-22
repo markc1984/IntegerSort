@@ -16,20 +16,16 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarColor02">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Site Navigation</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" asp-controller="Home" asp-action="Index">Home</a>
-             <a class="dropdown-item" asp-controller="Number" asp-action="Index">Number</a>
-
-@*            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Separated link</a>*@
-          </div>
-        </li>
-      </ul>
-    </div>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Sorts" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Number" asp-action="AddNumbers">Add Numbers</a>
+                        </li>
+                    </ul>
+                </div>
   </div>
 </nav>
     </header>

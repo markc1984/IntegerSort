@@ -1,6 +1,8 @@
 ﻿using IntegerSortWebApp.App_Data;
 using IntegerSortWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace IntegerSortWebApp.Controllers
 {
@@ -24,24 +26,27 @@ namespace IntegerSortWebApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreateSort(IFormCollection numbersToAdd)
         {
-
             Sort sort = new Sort();
             string formIntegerInput = numbersToAdd["Integer"];
+            int sortOrder = Int32.Parse(numbersToAdd["SortOrder"]);
             String[] strings = formIntegerInput.Split(",");
             List<Number> numbers = new List<Number>();
 
             for (int i = 0; i < strings.Length; i++)
-            {
-                Number number = new Number();
-                number.Integer = Convert.ToInt32(strings[i]);
-                numbers.Add(number);
+            { 
+                numbers.Add(new Number { Integer = Convert.ToInt32(strings[i]) });
             }
 
             var watch = new System.Diagnostics.Stopwatch();
 
             // Start performance metric
             watch.Start();
-            _database.Numbers.AddRange(numbers.OrderByDescending(num => num.Integer));
+            if (sortOrder == (int)SortOrder.Ascending)          
+                _database.Numbers.AddRange(numbers.OrderBy(num => num.Integer));      
+            else       
+                _database.Numbers.AddRange(numbers.OrderByDescending(num => num.Integer));
+
+            
             watch.Stop();
             sort.SortTime = watch.ElapsedMilliseconds;
             sort.SortDirection = (int)SortOrder.Descending;
@@ -53,19 +58,18 @@ namespace IntegerSortWebApp.Controllers
             return RedirectToAction("Index", "Sorts");
         }
 
-        public IActionResult RemoveSort(int Id)
+        public IActionResult RemoveSort(int? Id)
         {
+            if (Id == null)
+            {
+                return NotFound();
+            }
+
             Sort sortRecord = _database.Sorts.Find(Id);
             _database.Remove(sortRecord);
             _database.SaveChanges();
 
             return RedirectToAction("Index");
-        }
-
-        public IActionResult EditSort(int id)
-        {
-            return RedirectToAction("Index", "Sorts");
-
         }
 
         public IActionResult DeleteDatabase()
@@ -80,7 +84,14 @@ namespace IntegerSortWebApp.Controllers
 
         public IActionResult ExportJSON()
         {
-            return View();
+            if (_database.Sorts.Count() > 0)
+            {
+                _database.Numbers.ToList();
+                string export = JsonSerializer.Serialize(_database.Sorts.ToList());
+
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

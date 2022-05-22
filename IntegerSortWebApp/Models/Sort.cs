@@ -12,6 +12,6 @@ namespace IntegerSortWebApp.Models
         [Required]
         public int SortDirection { get; set; }
 
-        public IEnumerable<Number> Numbers { get; set; }
+        public virtual IEnumerable<Number> Numbers { get; set; }
     }
 }

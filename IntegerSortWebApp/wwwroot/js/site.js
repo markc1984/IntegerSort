@@ -4,16 +4,16 @@
 // Write your JavaScript code.
 
 function GetDynamicTextBox(value) {
-    var div = $("<div />");
-    var textInput = $("<input />").attr("type", "number").attr("name", "Integer").addClass("form-control");
+    var div = $("<div />").addClass("container");
+    var containerText = $("<div />").attr("style", "width: 15%").addClass("row pt-5")
+    var textInput = $("<input />").attr("type", "number").attr("name", "Integer").addClass("form-control col-sm").attr("required", "");
     textInput.val(value);
-    div.append("</br>");
-    div.append(textInput);
-    div.append("</br>");
+    containerText.append(textInput);
 
-    var button = $("<input />").attr("type", "button").attr("value", "Remove").addClass("btn btn-primary");
+    var button = $("<input />").attr("type", "button").attr("value", "Remove").addClass("btn btn-primary col-sm");
     button.attr("onclick", "RemoveInputBox(this)");
-    div.append(button);
+    containerText.append(button);
+    div.append(containerText);
 
     return div;
 }
@@ -23,6 +23,7 @@ function AddInputBox() {
 }
 
 function RemoveInputBox(button) {
+
     $(button).parent().remove();
 }
 
@@ -34,4 +35,10 @@ $(function () {
             $("#InputContainer").append(GetDynamicTextBox(this));
         });
     }
+});
+
+$(function () {
+    $('#btnCancel').click(function (e) {
+        $("form").validate().cancelSubmit = true;
+    });
 });

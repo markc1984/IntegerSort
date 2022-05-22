@@ -1,14 +1,17 @@
 ﻿@model Sort
 
 <form method="post">
-     <input id="btnAdd" type="button" value="Add" onclick="AddInputBox()" class="btn btn-primary"/>
-             <input type="submit" value="Submit" class="btn btn-primary" asp-controller="Sorts" asp-action="CreateSort"/>
-             <button name="button" class="btn btn-primary" asp-controller="Sorts" asp-action="Index">Back</button>
-
-    @*         <input type="radio" asp-for="SortDirection" value="@Model.SortDirection" checked /><br/>
-             <input type="radio" asp-for="SortDirection" value="@Model.SortDirection"/>*@
-
-        <div id="InputContainer" class="border"></div>
-
-        <br/>
+    <div class="container">
+        <div class="row">
+        <input id="btnAdd" type="button" value="Add" onclick="AddInputBox()" class="btn btn-outline-primary col-1"/>
+             <input type="submit" value="Submit" style="width: 15%" class="btn btn-outline-primary col-1" asp-controller="Sorts" asp-action="CreateSort"/>
+         </div>
+           <label> @Html.RadioButton("SortOrder", 0, true)Ascending</label>
+           <label> @Html.RadioButton("SortOrder", 1, false)Descending</label>
+    </div> 
+                 <div class="container">
+               <div class="row" id="InputContainer">
+                   <input type="number" name="Integer" style="width: 15%" class="form-control col-1" required="required">
+               </div>
+           </div>
 </form>

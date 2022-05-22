@@ -7,8 +7,8 @@
 <div class="container p-3">
         <div class="container">
             <div class="row">
-        <div class="col-sm"><a asp-controller="Number" asp-action="AddNumbers" class="btn btn-primary">New Sort</a></div>
-        <div class="col-sm"><a asp-controller="Sorts" asp-action="ExportJSON" class="btn btn-primary">Export JSON</a></div>
+        <div class="col-sm"><a asp-controller="Number" asp-action="AddNumbers" class="btn btn-outline-primary">New Sort</a></div>
+        <div class="col-sm"><a asp-controller="Sorts" asp-action="ExportJSON" class="btn btn-outline-primary">Export JSON</a></div>
         </div>
     </div>
 </div>
@@ -47,8 +47,16 @@
                         @obj.SortTime
                  </td>
                  <td>
-                     @obj.SortDirection
-                 </td>
+                     @if (@obj.SortDirection == 0)
+                    {
+                        <div>Ascending</div>
+                    }
+                    else
+                    {   
+                        <div>Descending</div>
+
+                    }
+                </td>
                  <td>
                     <div><a asp-route-id=@obj.Id value="Remove" asp-controller="Sorts" asp-action="RemoveSort" class="btn btn-primary">Remove</a></div>
                  </td>
