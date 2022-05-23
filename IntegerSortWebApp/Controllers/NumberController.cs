@@ -13,25 +13,22 @@ namespace IntegerSortWebApp.Controllers
             _database = database;
         }
 
-        public IActionResult Index(int? Id)
+        public async Task<IActionResult> Index(int? Id)
         {
-            if (Id == null)
-            {
+            if (Id == null || _database.Numbers == null || _database.Sorts == null)
                 return NotFound();
-            }
 
             IEnumerable<Number> numberList = _database.Numbers.Where(n => n.SortID == Id);
 
-            if (numberList.Count() != 0)
-            {
+            if (numberList.Count() != 0)        
                 return View(numberList);
-            }
+            
             // remove sort as all numbers have been deleted from the sort
             else
             {
-                Sort sortToRemove = _database.Sorts.Find(Id);
+                Sort sortToRemove = await _database.Sorts.FindAsync(Id);
                 _database.Sorts.Remove(sortToRemove);
-                _database.SaveChanges();
+                await _database.SaveChangesAsync();
                 return RedirectToAction("Index", "Sorts");
             }
         }
@@ -43,8 +40,8 @@ namespace IntegerSortWebApp.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]  
-        public IActionResult AddNumbers(IFormCollection numbersToAdd)       
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddNumbers(IFormCollection numbersToAdd)
         {
             string formIntegerInput = numbersToAdd["Integer"];
             String[] strings = formIntegerInput.Split(",");
@@ -55,10 +52,10 @@ namespace IntegerSortWebApp.Controllers
             {
                 Number number = new Number();
                 number.Integer = Convert.ToInt32(strings[i]);
-                numbers.Add(number); 
+                numbers.Add(number);
             }
-       
-            _database.SaveChanges();
+
+            await _database.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
@@ -90,25 +87,15 @@ namespace IntegerSortWebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult EditNumber(int id, [Bind("Id", "Integer", "Sort", "SortID")] Number newNum)
+        public async Task<IActionResult> EditNumber(int? id, [Bind("Id", "Integer", "Sort", "SortID")] Number newNum)
         {
-
             if (id == null || newNum == null)
             {
                 return NotFound();
             }
-
             _database.Numbers.Update(newNum);
-            _database.SaveChanges();
-
+            await _database.SaveChangesAsync();
             return RedirectToAction("Index", "Number", new { id = newNum.SortID });
-        }
-          
-        public IActionResult SortDescending()
-        {
-            IEnumerable<Number> numList = _database.Numbers;
-            numList = numList.OrderByDescending(num => num.Integer);
-            return View("Index", numList);
         }
     }
 }

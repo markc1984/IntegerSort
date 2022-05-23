@@ -5,7 +5,7 @@ namespace IntegerSortWebApp.Models
 {
     public class Sort
     {
-       [Key]
+        [Key]
         public int Id { get; set; }
         [Required]
         public long SortTime { get; set; }

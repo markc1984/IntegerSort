@@ -12,34 +12,34 @@
     </div>
 </div>
 
-<h2 class="text-primary">Integers table</h2> 
+<h2 class="text-primary">Integers table</h2>
 
 <table class="table table-bordered table-striped" style="width:100%">
     <thead>
         <tr>
             <th>
                 Integers
-            </th>   
+            </th>
             <th>
             </th>
         </tr>
     </thead>
     <tbody>
-        @foreach(var obj in Model)
+        @foreach (var obj in Model)
         {
-            <tr>                  
-                <td width="30%">
-                        @obj.Integer
-                </td>
+                <tr>
+                    <td width="30%">
+                    @obj.Integer
+                    </td>
                     <td>
                         <div class="container">
                             <div class="row">
                                 <div class="p-1 col-auto"><a asp-route-id=@obj.Id class="btn btn-outline-primary" value="Edit" asp-controller="Number" asp-action="EditNumber">Edit</a></div>
                                 <div class="p-1 col-auto"><a asp-route-id=@obj.Id class="btn btn-outline-primary" value="Remove" asp-controller="Number" asp-action="RemoveNumberFromSort">Remove</a></div>
-                            </div>    
+                            </div>
                         </div>
                     </td>
-            </tr>
+                </tr>
         }
     </tbody>
 </table>

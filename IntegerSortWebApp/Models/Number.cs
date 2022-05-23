@@ -6,9 +6,9 @@ namespace IntegerSortWebApp.Models
 {
     public class Number
     {
-        [Key] 
+        [Key]
         public int Id { get; set; }
-        [Required] 
+        [Required]
         public int Integer { get; set; }
         public int SortID { get; set; }
         [ForeignKey("SortID")]

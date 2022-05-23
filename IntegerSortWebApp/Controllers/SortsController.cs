@@ -85,8 +85,10 @@ namespace IntegerSortWebApp.Controllers
             {
                 return Json(_database.Sorts.ToList(), new JsonSerializerOptions { WriteIndented = true });
             }
-
-            return RedirectToAction("Index", "Sorts");
+            else
+            {
+                return RedirectToAction("Index", "Sorts");
+            }
         }
     }
 }
