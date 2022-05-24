@@ -2,7 +2,6 @@
 using IntegerSortWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace IntegerSortWebApp.Controllers
 {
@@ -22,10 +21,18 @@ namespace IntegerSortWebApp.Controllers
             return View(sortList);
         }
 
+        public IActionResult CreateSort()
+        {
+            return RedirectToAction("Index", "Sorts");
+
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateSort(IFormCollection numbersToAdd)
         {
+
+
             Sort tempSort = new Sort();
             string formIntegerInput = numbersToAdd["Integer"];
             int sortOrder = Int32.Parse(numbersToAdd["SortOrder"]);
@@ -57,25 +64,16 @@ namespace IntegerSortWebApp.Controllers
 
         public IActionResult RemoveSort(int? Id)
         {
-            if (Id == null)
+            Sort? sortRecord = _database.Sorts.Find(Id);
+
+            if (sortRecord == null)
             {
-                return NotFound();
+                return View();
             }
 
-            Sort sortRecord = _database.Sorts.Find(Id);
             _database.Remove(sortRecord);
             _database.SaveChanges();
 
-            return RedirectToAction("Index");
-        }
-
-        public IActionResult DeleteDatabase()
-        {
-            foreach (Sort obj in _database.Sorts)
-            {
-                _database.Remove(obj);
-            }
-            _database.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -87,7 +85,7 @@ namespace IntegerSortWebApp.Controllers
             }
             else
             {
-                return RedirectToAction("Index", "Sorts");
+                return View();
             }
         }
     }

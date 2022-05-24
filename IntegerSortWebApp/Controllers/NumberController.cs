@@ -7,7 +7,6 @@ namespace IntegerSortWebApp.Controllers
     public class NumberController : Controller
     {
         private readonly IntegerSortDBContext _database;
-
         public NumberController(IntegerSortDBContext database)
         {
             _database = database;
@@ -16,21 +15,25 @@ namespace IntegerSortWebApp.Controllers
         public async Task<IActionResult> Index(int? Id)
         {
             if (Id == null || _database.Numbers == null || _database.Sorts == null)
-                return NotFound();
+                return RedirectToAction("Index", "Sorts");
 
             IEnumerable<Number> numberList = _database.Numbers.Where(n => n.SortID == Id);
 
-            if (numberList.Count() != 0)        
+            int numb = numberList.Count();
+
+            if (numberList.Count() != 0)
                 return View(numberList);
-            
+
             // remove sort as all numbers have been deleted from the sort
-            else
+                Sort? sortToRemove = await _database.Sorts.FindAsync(Id);
+            if (sortToRemove != null)
             {
-                Sort sortToRemove = await _database.Sorts.FindAsync(Id);
                 _database.Sorts.Remove(sortToRemove);
                 await _database.SaveChangesAsync();
                 return RedirectToAction("Index", "Sorts");
             }
+
+            return RedirectToAction("Index", "Sorts");           
         }
 
         public IActionResult AddNumbers()
@@ -80,6 +83,10 @@ namespace IntegerSortWebApp.Controllers
 
         public IActionResult EditNumber(int Id)
         {
+            if (Id == 0)
+            return RedirectToAction("Index");
+
+
             var numberRecord = _database.Numbers.Find(Id);
 
             return View(numberRecord);
@@ -89,10 +96,7 @@ namespace IntegerSortWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditNumber(int? id, [Bind("Id", "Integer", "Sort", "SortID")] Number newNum)
         {
-            if (id == null || newNum == null)
-            {
-                return NotFound();
-            }
+
             _database.Numbers.Update(newNum);
             await _database.SaveChangesAsync();
             return RedirectToAction("Index", "Number", new { id = newNum.SortID });
