@@ -19,8 +19,6 @@ namespace IntegerSortWebApp.Controllers
 
             IEnumerable<Number> numberList = _database.Numbers.Where(n => n.SortID == Id);
 
-            int numb = numberList.Count();
-
             if (numberList.Count() != 0)
                 return View(numberList);
 
@@ -32,14 +30,12 @@ namespace IntegerSortWebApp.Controllers
                 await _database.SaveChangesAsync();
                 return RedirectToAction("Index", "Sorts");
             }
-
             return RedirectToAction("Index", "Sorts");           
         }
 
         public IActionResult AddNumbers()
         {
             return View();
-
         }
 
         [HttpPost]
@@ -65,16 +61,12 @@ namespace IntegerSortWebApp.Controllers
         public IActionResult RemoveNumberFromSort(int? Id)
         {
             if (Id == null)
-            {
-                return NotFound();
-            }
-
-            Number numberRecord = _database.Numbers.Find(Id);
+                return RedirectToAction("Index", "Sorts");
+            
+            Number? numberRecord = _database.Numbers.Find(Id);
 
             if (numberRecord == null)
-            {
-                return NotFound();
-            }
+                return View();
 
             _database.Remove(numberRecord);
             _database.SaveChanges();
@@ -85,10 +77,7 @@ namespace IntegerSortWebApp.Controllers
         {
             if (Id == 0)
             return RedirectToAction("Index");
-
-
-            var numberRecord = _database.Numbers.Find(Id);
-
+            Number? numberRecord = _database.Numbers.Find(Id);
             return View(numberRecord);
         }
 
@@ -96,7 +85,6 @@ namespace IntegerSortWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditNumber(int? id, [Bind("Id", "Integer", "Sort", "SortID")] Number newNum)
         {
-
             _database.Numbers.Update(newNum);
             await _database.SaveChangesAsync();
             return RedirectToAction("Index", "Number", new { id = newNum.SortID });

@@ -5,6 +5,7 @@ using IntegerSortWebApp.App_Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace IntegerSortWebAppTest
 {
@@ -34,8 +35,14 @@ namespace IntegerSortWebAppTest
             // Act
             var response = await client.GetAsync(URL);
             int code = (int)response.StatusCode;
-            // Assert - If the pages return 200 successful, error handling where no ID provided is valid
+            // Assert - Return 200 successful for all pages
             Assert.Equal(200, code);
+        }
+
+        [Fact]
+        public async void Test_Page_Content()
+        {
+            //IFormCollection form = new IFormCollection();
         }
 }
 
