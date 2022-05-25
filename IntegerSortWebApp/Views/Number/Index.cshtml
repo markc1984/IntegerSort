@@ -12,6 +12,19 @@
     </div>
 </div>
 
+@if (ViewData["Error"] != null)
+{
+    <div class="red">
+        <p><strong>@ViewData["Error"].ToString()</strong></p>
+    </div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="green">
+        <p><strong>@TempData["Success"].ToString()</strong></p>
+    </div>
+}
+
 <h2 class="text-primary">Integers table</h2>
 
 <table class="table table-bordered table-striped" style="width:100%">

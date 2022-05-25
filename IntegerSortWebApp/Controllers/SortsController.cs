@@ -27,33 +27,47 @@ namespace IntegerSortWebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateSort(IFormCollection numbersToAdd)
+        public IActionResult CreateSort(IFormCollection formCollection)
         {
-            Sort tempSort = new Sort();
-            string formIntegerInput = numbersToAdd["Integer"];
-            int sortOrder = Int32.Parse(numbersToAdd["SortOrder"]);
-            tempSort.SortDirection = sortOrder;
-            String[] numberStringArray = formIntegerInput.Split(",");
+            Sort newSort = new Sort();
+            string integer = formCollection["Integer"];
+            int sortOrder;
+            if (!Int32.TryParse(formCollection["SortOrder"], out sortOrder))
+                return RedirectToAction("Index", "Sorts");
+            newSort.SortDirection = sortOrder;
+            String[] numberStringArray = integer.Split(",");
             List<Number> numbers = new List<Number>();
 
             for (int i = 0; i < numberStringArray.Length; i++)
             {
-                numbers.Add(new Number { Integer = Convert.ToInt32(numberStringArray[i]) });
+                int newNumber;
+                if (!Int32.TryParse(numberStringArray[i], out newNumber))
+                    return RedirectToAction("Index", "Sorts");
+                numbers.Add(new Number { Integer = newNumber });
             }
 
-            var watch = new System.Diagnostics.Stopwatch();
-            // Start performance metric
-            watch.Start();
-            if (sortOrder == (int)SortOrder.Ascending)
-                _database.Numbers.AddRange(numbers.OrderBy(num => num.Integer));
-            else
-                _database.Numbers.AddRange(numbers.OrderByDescending(num => num.Integer));
-            watch.Stop();
-            tempSort.SortTime = watch.ElapsedMilliseconds;
-            tempSort.Numbers = numbers;
-            _database.Sorts.Add(tempSort);
-            _database.SaveChanges();
-            return RedirectToAction("Index", "Sorts");
+            try
+            {
+                var watch = new System.Diagnostics.Stopwatch();
+                // Start performance metric
+                watch.Start();
+                if (sortOrder == (int)SortOrder.Ascending)
+                    _database.Numbers.AddRange(numbers.OrderBy(num => num.Integer));
+                else
+                    _database.Numbers.AddRange(numbers.OrderByDescending(num => num.Integer));
+                watch.Stop();
+                newSort.SortTime = watch.ElapsedMilliseconds;
+                newSort.Numbers = numbers;
+                _database.Sorts.Add(newSort);
+                _database.SaveChanges();
+                TempData["Success"] = "Successfully added new integers to database";
+                return RedirectToAction("Index", "Sorts");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "There was an error adding new integers to database";
+                return RedirectToAction("Index");
+            }
         }
 
         public IActionResult RemoveSort(int? Id)
@@ -61,17 +75,20 @@ namespace IntegerSortWebApp.Controllers
             Sort? sortRecord = _database.Sorts.Find(Id);
             if (sortRecord == null)
                 return View();
-            _database.Remove(sortRecord);
-            _database.SaveChanges();
-            return RedirectToAction("Index");
-        }
 
-        public IActionResult ExportJSON()
-        {
-            if (_database.Numbers.ToList().Count > 0)
-                return Json(_database.Sorts.ToList(), new JsonSerializerOptions { WriteIndented = true });
-            else
-                return View();
+            try
+            {
+                _database.Remove(sortRecord);
+                _database.SaveChanges();
+                TempData["Success"] = "Successfully removed sort from database";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "There was an error removing sort from database";
+                return RedirectToAction("Index");
+            }
+            return RedirectToAction("Index");
         }
     }
 }

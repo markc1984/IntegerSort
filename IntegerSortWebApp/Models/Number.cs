@@ -7,6 +7,7 @@ namespace IntegerSortWebApp.Models
     public class Number
     {
         [Key]
+        [JsonIgnore]
         public int Id { get; set; }
         [Required]
         public int Integer { get; set; }

@@ -1,0 +1,61 @@
+[
+  {
+    "Id": 1,
+    "SortTime": 46,
+    "SortDirection": 0,
+    "Numbers": [
+      {
+        "Id": 1,
+        "Integer": 65,
+        "SortID": 1
+      },
+      {
+        "Id": 2,
+        "Integer": 77,
+        "SortID": 1
+      },
+      {
+        "Id": 3,
+        "Integer": 77,
+        "SortID": 1
+      },
+      {
+        "Id": 4,
+        "Integer": 88,
+        "SortID": 1
+      }
+    ]
+  },
+  {
+    "Id": 2,
+    "SortTime": 1,
+    "SortDirection": 1,
+    "Numbers": [
+      {
+        "Id": 5,
+        "Integer": 76576,
+        "SortID": 2
+      },
+      {
+        "Id": 6,
+        "Integer": 999,
+        "SortID": 2
+      },
+      {
+        "Id": 7,
+        "Integer": 766,
+        "SortID": 2
+      },
+      {
+        "Id": 8,
+        "Integer": 88,
+        "SortID": 2
+      },
+      {
+        "Id": 9,
+        "Integer": 44,
+        "SortID": 2
+      }
+    ]
+  }
+]

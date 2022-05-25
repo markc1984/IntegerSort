@@ -22,15 +22,23 @@ namespace IntegerSortWebApp.Controllers
             if (numberList.Count() != 0)
                 return View(numberList);
 
-            // remove sort as all numbers have been deleted from the sort
-                Sort? sortToRemove = await _database.Sorts.FindAsync(Id);
-            if (sortToRemove != null)
+
+            try
             {
-                _database.Sorts.Remove(sortToRemove);
-                await _database.SaveChangesAsync();
+                Sort? sortToRemove = await _database.Sorts.FindAsync(Id);
+                if (sortToRemove != null)
+                {
+                    _database.Sorts.Remove(sortToRemove);
+                    await _database.SaveChangesAsync();
+                    return RedirectToAction("Index", "Sorts");
+                }
+            }
+            catch (Exception ex)
+            {
                 return RedirectToAction("Index", "Sorts");
             }
-            return RedirectToAction("Index", "Sorts");           
+
+            return RedirectToAction("Index", "Sorts");
         }
 
         public IActionResult AddNumbers()
@@ -58,35 +66,60 @@ namespace IntegerSortWebApp.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult RemoveNumberFromSort(int? Id)
+        public async Task<IActionResult> RemoveNumberFromSort(int? Id)
         {
             if (Id == null)
                 return RedirectToAction("Index", "Sorts");
-            
-            Number? numberRecord = _database.Numbers.Find(Id);
+
+            Number? numberRecord = await _database.Numbers.FindAsync(Id);
 
             if (numberRecord == null)
                 return View();
 
-            _database.Remove(numberRecord);
-            _database.SaveChanges();
-            return RedirectToAction("Index", "Number", new { id = numberRecord.SortID });
+            try
+            {
+                _database.Remove(numberRecord);
+                _database.SaveChanges();
+                TempData["Success"] = "Successfully removed record";
+                return RedirectToAction("Index", "Number", new { id = numberRecord.SortID });
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "There was an error removing the record";
+                return RedirectToAction("Index", "Number", new { id = Id });
+            }
         }
 
-        public IActionResult EditNumber(int Id)
+        public async Task<IActionResult> EditNumber(int Id)
         {
-            if (Id == 0)
-            return RedirectToAction("Index");
-            Number? numberRecord = _database.Numbers.Find(Id);
-            return View(numberRecord);
+            try
+            {
+                if (Id == 0)
+                    return RedirectToAction("Index");
+                Number? numberRecord = await _database.Numbers.FindAsync(Id);
+                return View(numberRecord);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Index", "Number", new { id = Id });
+            }
+
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditNumber(int? id, [Bind("Id", "Integer", "Sort", "SortID")] Number newNum)
         {
-            _database.Numbers.Update(newNum);
-            await _database.SaveChangesAsync();
+            try
+            {
+                _database.Numbers.Update(newNum);
+                await _database.SaveChangesAsync();
+                TempData["Success"] = "Successfully edited record";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "There was a problem editing the record";
+            }
             return RedirectToAction("Index", "Number", new { id = newNum.SortID });
         }
     }
